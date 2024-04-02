@@ -3,10 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComunaController;
 use App\Http\Controllers\MunicipioController;
+use App\Http\Controllers\DepartamentoController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/departamentos', [DepartamentoController::class, 'index']);
 
 Route::get('/municipios', [MunicipioController::class, 'index'])->name('municipios.index');
 Route::post('/municipios', [MunicipioController::class, 'store'])->name('municipios.store');
