@@ -12,6 +12,7 @@ Route::get('/', function () {
 Route::get('/departamentos', [DepartamentoController::class, 'index'])->name('departamentos.index');
 Route::post('/departamentos', [DepartamentoController::class, 'store'])->name('departamentos.store');
 Route::get('/departamentos/create', [DepartamentoController::class, 'create'])->name('departamentos.create');
+Route::delete('/departamentos/{departamento}', [DepartamentoController::class, 'destroy'])->name('departamentos.destroy');
 
 Route::get('/municipios', [MunicipioController::class, 'index'])->name('municipios.index');
 Route::post('/municipios', [MunicipioController::class, 'store'])->name('municipios.store');
