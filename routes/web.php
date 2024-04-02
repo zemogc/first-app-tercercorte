@@ -2,10 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComunaController;
+use App\Http\Controllers\MunicipioController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/municipios', [MunicipioController::class, 'index']);
 
 Route::get('/comunas', [ComunaController::class, 'index'])->name('comunas.index');
 Route::post('/comunas', [ComunaController::class, 'store'])->name('comunas.store');
