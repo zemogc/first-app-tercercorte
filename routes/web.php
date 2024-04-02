@@ -10,7 +10,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/pais', [PaisController::class, 'index']);
+Route::get('/pais', [PaisController::class, 'index'])->name('pais.index');
+Route::post('/pais', [PaisController::class, 'store'])->name('pais.store');
+Route::get('/pais/create', [PaisController::class, 'create'])->name('pais.create');
 
 Route::get('/departamentos', [DepartamentoController::class, 'index'])->name('departamentos.index');
 Route::post('/departamentos', [DepartamentoController::class, 'store'])->name('departamentos.store');

@@ -11,4 +11,5 @@ class Pais extends Model
     protected $table = "tb_pais";
     protected $primaryKey = 'pais_capi';
     public $timestamps = false;
+    public $incrementing = true;
 }
