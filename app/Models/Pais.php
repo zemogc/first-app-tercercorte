@@ -9,6 +9,6 @@ class Pais extends Model
 {
     use HasFactory;
     protected $table = "tb_pais";
-    protected $primaryKey = 'pais_codi';
+    protected $primaryKey = 'pais_capi';
     public $timestamps = false;
 }
