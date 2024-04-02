@@ -8,34 +8,38 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>MUNICIPIOS</title>
+    <title>Add Municipio</title>
   </head>
   <body>
     <div class="container">
-    <h1>Listado de Municipios</h1>
-    <a href="{{ route('municipios.create') }}" class="btn btn-success">Add</a>
-    
-    <table class="table">
-        <thead>
-            <tr>
-            <th scope="col">Code</th>
-            <th scope="col">Municipio</th>
-            <th scope="col">Departamento</th>
-            <th scope="col">Actions </th>
-        </tr>
-        </thead>
-        <tbody>
-            @foreach ($municipios as $municipio)
-        <tr>
-            <th scope="row">{{ $municipio->muni_codi }}</th>
-            <td>{{ $municipio->muni_nomb }}</td>
-            <td>{{ $municipio->depa_nomb }}</td>
-            <td><span>Actions</span></td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-</div>
+    <h1>Add Municipio</h1>
+    <form method="POST" action="{{ route('municipios.store') }}">
+        @csrf
+        <div class="mb-3">
+        <label for="id" class="form-label">Code</label>
+        <input type="text" class="form-control" id="id" aria-describedby="idHelp" name="id"
+        disabled="disabled">
+        <div id="idHelp" class="form-text">Municipio code</div>
+        </div>
+        <div class="mb-3">
+        <label for="name" class="form-label">Municipio</label>
+        <input type="text" required class="form-control" id="name" aria-describedby="nameHelp" name="name"
+        placeholder="Name commune">
+        </div>
+
+        <label for="departamento">Departamento:</label>
+        <select class="form-select" id="departamento" name="code" required>
+            <option selected disabled value="">Choose One...</option>
+            @foreach ($departamentos as $departamento)
+                <option value="{{ $departamento->depa_codi }}">{{ $departamento->depa_nomb }}</option>
+            @endforeach
+        </select>
+        <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{{ route('municipios.index') }}" class="btn btn-warning">Cancel</a>
+        </div>
+</form>
+    </div>
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->

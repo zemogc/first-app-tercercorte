@@ -8,7 +8,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/municipios', [MunicipioController::class, 'index']);
+Route::get('/municipios', [MunicipioController::class, 'index'])->name('municipios.index');
+Route::post('/municipios', [MunicipioController::class, 'store'])->name('municipios.store');
+Route::get('/municipios/create', [MunicipioController::class, 'create'])->name('municipios.create');
+
 
 Route::get('/comunas', [ComunaController::class, 'index'])->name('comunas.index');
 Route::post('/comunas', [ComunaController::class, 'store'])->name('comunas.store');
