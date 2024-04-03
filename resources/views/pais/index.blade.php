@@ -30,6 +30,8 @@
             <td>{{ $pais->pais_nomb }}</td>
             <td>{{ $pais->muni_nomb }}</td>
             <td>
+              <a href="{{route('pais.edit', ['pais'=>$pais->pais_codi])}}"
+              class="btn btn-info"> Edit </a> </li>
               <form action="{{ route('pais.destroy', ['pais'=>$pais->pais_codi]) }}"
               method="POST" style="display:inline-block">
               @method('delete')
