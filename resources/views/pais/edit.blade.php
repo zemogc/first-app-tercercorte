@@ -19,7 +19,7 @@
         <div class="mb-3">
         <label for="id" class="form-label">Code</label>
         <input type="text" require class="form-control" maxlength="3" style="text-transform:uppercase" id="id" name="id"
-        value="{{ $pais->pais_codi }}">
+        disabled="disabled" value="{{ $pais->pais_codi }}">
         <div id="idHelp" class="form-text">Pais code</div>
         </div>
         <div class="mb-3">
@@ -32,7 +32,7 @@
         <select class="form-select" id="capital" name="code" required>
             <option selected disabled value="">Choose One...</option>
             @foreach ($municipios as $municipio)
-                @if ($municipio->muni_codi == $pais->pais_codi)
+                @if ($municipio->muni_codi == $pais->pais_capi)
                     <option selected value="{{ $municipio->muni_codi }}">{{ $municipio->muni_nomb }}</option>
                 @else
                     <option value="{{ $municipio->muni_codi }}">{{ $municipio->muni_nomb }}</option>
