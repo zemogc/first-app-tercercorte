@@ -12,34 +12,35 @@ class PaisController extends Controller
     public function index()
     {
         //$pais = Pais::all();
-        $pais = DB::table('tb_pais')
-        ->select('tb_pais.*', 'tb_pais.pais_codi')
-        ->get();
-        return view('pais.index', ['pais' => $pais]);
+        $paises = DB::table('tb_pais')
+            ->join('tb_municipio', 'tb_pais.pais_capi', '=', 'tb_municipio.muni_codi')
+            ->select('tb_pais.*', 'tb_municipio.muni_nomb')
+            ->get();
+        return view('pais.index', ['paises'=>$paises]);
     }
 
 
     public function create()
     {
-        $pais = DB::table('tb_pais')
-        ->orderBy('pais_codi')
+        $municipios = DB::table('tb_municipio')
+        ->orderBy('muni_nomb')
         ->get();
-        return view('pais.new', ['pais' => $pais]);
+        return view('pais.new', ['municipios' => $municipios]);
     }
 
     public function store(Request $request)
     {
         $pais = new Pais();
-        $pais->pais_capi = $request->id;
-        // El código de pais es auto incremental
+        $pais->pais_codi = strtoupper($request->id);
         $pais->pais_nomb = $request->name;
-        $pais->pais_codi = $request->code;
+        $pais->pais_capi = $request->code;
         $pais->save();
 
-        $pais = DB::table('tb_pais')
-        ->select('tb_pais.*', 'tb_pais.pais_codi')
+        $paises = DB::table('tb_pais')
+        ->join('tb_municipio', 'tb_pais.pais_capi', '=', 'tb_municipio.muni_codi')
+        ->select('tb_pais.*', 'tb_municipio.muni_nomb')
         ->get();
-        return view('pais.index', ['pais' => $pais]);
+        return view('pais.index', ['paises' => $paises]);
     }
 
     public function show(string $id)

@@ -17,8 +17,7 @@
         @csrf
         <div class="mb-3">
         <label for="id" class="form-label">Code</label>
-        <input type="text" class="form-control" id="id" aria-describedby="idHelp" name="id"
-        disabled="disabled">
+        <input type="text" require class="form-control" maxlength="3" style="text-transform:uppercase" id="id" aria-describedby="idHelp" name="id">
         <div id="idHelp" class="form-text">Pais code</div>
         </div>
         <div class="mb-3">
@@ -26,12 +25,14 @@
         <input type="text" required class="form-control" id="name" aria-describedby="nameHelp" name="name"
         placeholder="Name pais">
         </div>
-        <div class="mb-3">
-        <label for="code" class="form-label">Nomenclatura</label>
-        <input type="text" required class="form-control" id="code" aria-describedby="codeHelp" name="code"
-        placeholder="Code pais">
-        </div>
 
+        <label for="capital">Capital</label>
+        <select class="form-select" id="capital" name="code" required>
+            <option selected disabled value="">Choose One...</option>
+            @foreach ($municipios as $municipio)
+                <option value="{{ $municipio->muni_codi }}">{{ $municipio->muni_nomb }}</option>
+            @endforeach
+        </select>
         <div class="mt-3">
         <button type="submit" class="btn btn-primary">Save</button>
         <a href="{{ route('pais.index') }}" class="btn btn-warning">Cancel</a>
