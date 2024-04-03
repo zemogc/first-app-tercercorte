@@ -10,9 +10,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/pais', [PaisController::class, 'index'])->name('pais.index');
-Route::post('/pais', [PaisController::class, 'store'])->name('pais.store');
-Route::get('/pais/create', [PaisController::class, 'create'])->name('pais.create');
+Route::get('/paises', [PaisController::class, 'index'])->name('pais.index');
+Route::post('/paises', [PaisController::class, 'store'])->name('pais.store');
+Route::get('/paises/create', [PaisController::class, 'create'])->name('pais.create');
+Route::delete('/paises/{pais}', [PaisController::class, 'destroy'])->name('pais.destroy');
+Route::put('/paises/{pais}', [PaisController::class, 'update'])->name('pais.update');
+Route::get('/paises/{pais}/edit', [PaisController::class, 'edit'])->name('pais.edit');
 
 Route::get('/departamentos', [DepartamentoController::class, 'index'])->name('departamentos.index');
 Route::post('/departamentos', [DepartamentoController::class, 'store'])->name('departamentos.store');
