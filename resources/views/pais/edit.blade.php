@@ -11,6 +11,12 @@
     <title>Pais</title>
   </head>
   <body>
+  <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Paises') }}
+        </h2>
+    </x-slot>
     <div class="container">
     <h1>Edit Pais</h1>
     <form method="POST" action="{{ route('pais.update', ['pais'=>$pais->pais_codi]) }}">
@@ -57,3 +63,4 @@
     -->
   </body>
 </html>
+</x-app-layout>

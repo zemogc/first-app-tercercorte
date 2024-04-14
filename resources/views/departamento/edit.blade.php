@@ -11,6 +11,12 @@
     <title>Departamento</title>
   </head>
   <body>
+  <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Departamentos') }}
+        </h2>
+    </x-slot>
     <div class="container">
     <h1>Edit Departamento</h1>
     <form method="POST" action="{{ route('departamentos.update', ['departamento'=> $departamento->depa_codi]) }}">
@@ -53,3 +59,4 @@
     -->
   </body>
 </html>
+</x-app-layout>

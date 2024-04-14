@@ -11,6 +11,12 @@
     <title>Add Municipio</title>
   </head>
   <body>
+  <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Municipios') }}
+        </h2>
+    </x-slot>
     <div class="container">
     <h1>Add Municipio</h1>
     <form method="POST" action="{{ route('municipios.store') }}">
@@ -52,3 +58,4 @@
     -->
   </body>
 </html>
+</x-app-layout>
