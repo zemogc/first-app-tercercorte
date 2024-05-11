@@ -16,35 +16,7 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
-
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('comunas.index')" :active="request()->routeIs('comunas.index')">
-                        {{ __('Comunas') }}
-                    </x-nav-link>
-                </div>
-
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('municipios.index')" :active="request()->routeIs('municipios.index')">
-                        {{ __('Municipios') }}
-                    </x-nav-link>
-                </div>
-
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('departamentos.index')" :active="request()->routeIs('departamentos.index')">
-                        {{ __('Departamentos') }}
-                    </x-nav-link>
-                </div>
-
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('pais.index')" :active="request()->routeIs('pais.index')">
-                        {{ __('Paises') }}
-                    </x-nav-link>
-                </div>
-
-                
             </div>
-
-            
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -99,9 +71,6 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
-        
-        
-        
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
