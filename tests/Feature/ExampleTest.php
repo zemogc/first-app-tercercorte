@@ -19,4 +19,9 @@ class ExampleTest extends TestCase
             ->assertSee('GeoAtlas')
             ->assertSeeInOrder(['Países', '3']);
     }
+
+    public function test_la_documentacion_de_la_api_es_publica(): void
+    {
+        $this->get('/documentacion-api')->assertOk()->assertSee('/api/municipios');
+    }
 }
