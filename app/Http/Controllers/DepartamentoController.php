@@ -2,85 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\EliminaConSeguridad;
+use App\Http\Requests\Geografia\DepartamentoRequest;
 use App\Models\Departamento;
+use App\Models\Pais;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class DepartamentoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //$departamentos = Departamento::all();
-        $departamentos = DB::table('tb_departamento')
-            ->join('tb_pais', 'tb_departamento.pais_codi', '=', 'tb_pais.pais_codi')
-            ->select('tb_departamento.*', 'tb_pais.pais_nomb')
-            ->get();
-        return view('departamento.index', ['departamentos'=>$departamentos]);
-    }
+    use EliminaConSeguridad;
 
-    public function create()
+    public function index(Request $request): View
     {
-        $pais = DB::table('tb_pais')
-        ->orderBy('pais_nomb')
-        ->get();
-        return view('departamento.new', ['pais' => $pais]);
-    }
+        $departamentos = Departamento::with('pais')
+            ->withCount('municipios')
+            ->buscar($request->query('q'))
+            ->orderBy('depa_nomb')
+            ->paginate(10)
+            ->withQueryString();
 
-    public function store(Request $request)
-    {
-        $departamento = new Departamento();
-        // $departamento->depa_codi = $request->id;
-        // El código de departamento es auto incremental
-        $departamento->depa_nomb = $request->name;
-        $departamento->pais_codi = $request->code;
-        $departamento->save();
-
-        $departamentos = DB::table('tb_departamento')
-        ->join('tb_pais', 'tb_departamento.pais_codi', '=', 'tb_pais.pais_codi')
-        ->select('tb_departamento.*', 'tb_pais.pais_nomb')
-        ->get();
         return view('departamento.index', ['departamentos' => $departamentos]);
     }
 
-    public function show(string $id)
+    public function create(): View
     {
-        //
+        return view('departamento.new', ['paises' => Pais::orderBy('pais_nomb')->get()]);
     }
 
-    public function edit($id)
+    public function store(DepartamentoRequest $request): RedirectResponse
     {
-        $departamento= Departamento::find($id);
-        $pais=DB::table('tb_pais')
-        ->orderBy('pais_nomb')
-        ->get();
-        return view('departamento.edit', ['departamento' => $departamento, 'pais'=>$pais]);
+        $departamento = Departamento::create($request->validated());
+
+        return redirect()->route('departamentos.index')
+            ->with('success', "Departamento {$departamento->depa_nomb} creado correctamente.");
     }
 
-    public function update(Request $request, $id)
+    public function show(Departamento $departamento): View
     {
-        $departamento= Departamento::find($id);
-        $departamento->depa_nomb = $request->name;
-        $departamento->pais_codi = $request->code;
-        $departamento->save();
-        $departamentos=DB::table('tb_departamento')
-        ->join('tb_pais', 'tb_departamento.pais_codi', '=', 'tb_pais.pais_codi')
-        ->select('tb_departamento.*', 'tb_pais.pais_nomb')
-        ->get();
-        return view('departamento.index', ['departamentos' => $departamentos]);
+        $departamento->load(['pais', 'municipios' => fn ($q) => $q->withCount('comunas')->orderByDesc('muni_pobl')]);
+
+        return view('departamento.show', ['departamento' => $departamento]);
     }
 
-    public function destroy($id)
+    public function edit(Departamento $departamento): View
     {
-        $departamento= Departamento::find($id);
-        $departamento->delete();
+        return view('departamento.edit', [
+            'departamento' => $departamento,
+            'paises' => Pais::orderBy('pais_nomb')->get(),
+        ]);
+    }
 
-        $departamentos=DB::table('tb_departamento')
-        ->join('tb_pais', 'tb_departamento.pais_codi', '=', 'tb_pais.pais_codi')
-        ->select('tb_departamento.*', 'tb_pais.pais_nomb')
-        ->get();
-        return view('departamento.index', ['departamentos' => $departamentos]);
+    public function update(DepartamentoRequest $request, Departamento $departamento): RedirectResponse
+    {
+        $departamento->update($request->validated());
+
+        return redirect()->route('departamentos.index')
+            ->with('success', "Departamento {$departamento->depa_nomb} actualizado.");
+    }
+
+    public function destroy(Departamento $departamento): RedirectResponse
+    {
+        return $this->eliminar($departamento, 'departamentos.index', 'el departamento');
     }
 }
