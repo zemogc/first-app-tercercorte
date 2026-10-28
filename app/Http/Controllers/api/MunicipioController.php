@@ -2,54 +2,58 @@
 
 namespace App\Http\Controllers\api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Requests\Geografia\MunicipioRequest;
+use App\Http\Resources\MunicipioResource;
 use App\Models\Municipio;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class MunicipioController extends Controller
+class MunicipioController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request): AnonymousResourceCollection
     {
-        $municipios = DB::table('tb_municipio')
-            ->join('tb_departamento', 'tb_municipio.depa_codi', '=', 'tb_departamento.depa_codi')
-            ->select('tb_municipio.*', 'tb_departamento.depa_nomb')
-            ->get();
-            return json_encode(["municipios"=>$municipios]);
+        $municipios = Municipio::with('departamento')
+            ->withCount('comunas')
+            ->buscar($request->query('q'))
+            ->when($request->query('departamento'), fn ($q, $depa) => $q->where('depa_codi', $depa))
+            ->when($request->query('pais'), fn ($q, $pais) => $q->whereHas(
+                'departamento', fn ($d) => $d->where('pais_codi', strtoupper($pais))
+            ))
+            ->when(
+                $request->query('orden') === 'poblacion',
+                fn ($q) => $q->orderByDesc('muni_pobl'),
+                fn ($q) => $q->orderBy('muni_nomb'),
+            )
+            ->paginate($this->porPagina($request))
+            ->withQueryString();
+
+        return MunicipioResource::collection($municipios);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(MunicipioRequest $request): JsonResponse
     {
-        //
+        $municipio = Municipio::create($request->validated());
+
+        return (new MunicipioResource($municipio->load('departamento')))->response()->setStatusCode(201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Municipio $municipio): MunicipioResource
     {
-        //
+        return new MunicipioResource($municipio
+            ->load(['departamento.pais', 'comunas' => fn ($q) => $q->orderBy('comu_codi')])
+            ->loadCount('comunas'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(MunicipioRequest $request, Municipio $municipio): MunicipioResource
     {
-        //
+        $municipio->update($request->validated());
+
+        return new MunicipioResource($municipio->load('departamento'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Municipio $municipio): JsonResponse
     {
-        //
+        return $this->eliminar($municipio);
     }
 }
