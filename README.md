@@ -9,12 +9,14 @@
 Administra países, departamentos, municipios y comunas, consulta los datos en JSON
 y hazle preguntas en lenguaje natural a un asistente que lee la base de datos.
 
-![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?logo=laravel&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)
 ![Alpine.js](https://img.shields.io/badge/Alpine.js-3-8BC0D0?logo=alpinedotjs&logoColor=white)
 ![Claude](https://img.shields.io/badge/IA-Claude-D97757)
 ![Pruebas](https://img.shields.io/badge/pruebas-62%20pasando-10B981)
+![Vulnerabilidades](https://img.shields.io/badge/vulnerabilidades-0-10B981)
+![Licencia](https://img.shields.io/badge/licencia-MIT-blue)
 
 <img src="docs/screenshots/landing-light.png" alt="Página de inicio de GeoAtlas" width="100%">
 
@@ -24,6 +26,7 @@ y hazle preguntas en lenguaje natural a un asistente que lee la base de datos.
 
 ## Contenido
 
+- [Demo](#demo)
 - [Características](#características)
 - [Capturas de pantalla](#capturas-de-pantalla)
 - [Tecnologías](#tecnologías)
@@ -32,7 +35,16 @@ y hazle preguntas en lenguaje natural a un asistente que lee la base de datos.
 - [Asistente de IA](#asistente-de-ia)
 - [API REST](#api-rest)
 - [Pruebas](#pruebas)
+- [Seguridad](#seguridad)
 - [Estructura del proyecto](#estructura-del-proyecto)
+
+## Demo
+
+<div align="center">
+<img src="docs/demo.gif" alt="Recorrido por GeoAtlas: inicio de sesión, panel, modo oscuro, búsqueda y detalle de municipios" width="100%">
+
+<sub>Inicio de sesión → panel con gráficas → modo oscuro → búsqueda → detalle de Cali y Antioquia → asistente IA</sub>
+</div>
 
 ## Características
 
@@ -86,7 +98,7 @@ y hazle preguntas en lenguaje natural a un asistente que lee la base de datos.
 
 ## Tecnologías
 
-- **Backend:** Laravel 11, PHP 8.2+, Eloquent, Form Requests, API Resources, Sanctum
+- **Backend:** Laravel 12, PHP 8.2+, Eloquent, Form Requests, API Resources, Sanctum
 - **Frontend:** Blade, Tailwind CSS, Alpine.js, Chart.js, Vite
 - **IA:** API de Claude con el SDK oficial [`anthropic-ai/sdk`](https://github.com/anthropics/anthropic-sdk-php) y *tool use*
 - **Autenticación:** Laravel Breeze
@@ -257,6 +269,22 @@ php artisan test
 ```
 
 La suite cubre el CRUD web, la API, las herramientas del asistente (contra datos reales sembrados) y el bucle de *tool use* con la API de Claude simulada.
+
+## Seguridad
+
+- Dependencias auditadas con `composer audit` y `npm audit`: **0 vulnerabilidades conocidas**.
+- Consultas con Eloquent y parámetros enlazados (sin SQL concatenado con datos del usuario).
+- Protección CSRF en formularios, contraseñas con bcrypt y tokens de API con Sanctum.
+- Límites de peticiones: 60/min en la API, 10/min en el asistente y 6/min al pedir tokens.
+- La clave de Anthropic solo vive en el servidor; el navegador nunca la recibe.
+- Las respuestas de la IA se escapan antes de darles formato para evitar XSS.
+
+Para revisar las dependencias en cualquier momento:
+
+```bash
+composer audit
+npm audit
+```
 
 ## Estructura del proyecto
 
