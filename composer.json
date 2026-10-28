@@ -1,8 +1,8 @@
 {
-    "name": "laravel/laravel",
+    "name": "zemogc/geoatlas",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "Atlas geográfico de Latinoamérica con Laravel 11, API REST y asistente de IA con Claude.",
+    "keywords": ["laravel", "geografia", "colombia", "api-rest", "claude", "ia"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
