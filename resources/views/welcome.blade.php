@@ -31,7 +31,7 @@
             <main>
                 <section class="mx-auto max-w-7xl px-6 pb-20 pt-12 text-center lg:px-8 lg:pt-20">
                     <span class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Laravel 11 · Tailwind CSS · Alpine.js
+                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Laravel 12 · Tailwind CSS · Alpine.js
                     </span>
                     <h1 class="mx-auto mt-6 max-w-4xl text-4xl font-extrabold tracking-tight sm:text-6xl">
                         Tu atlas geográfico de
