@@ -16,7 +16,7 @@
 
                 <div class="relative max-w-md">
                     <h2 class="text-4xl font-extrabold leading-tight tracking-tight">Explora la geografía de Latinoamérica, región por región.</h2>
-                    <p class="mt-4 text-lg text-white/80">Países, departamentos, municipios y comunas en un solo lugar, con estadísticas y una API lista para consumir.</p>
+                    <p class="mt-4 text-lg text-white/80">Países, departamentos, municipios y comunas en un solo lugar, con estadísticas, una API REST y un asistente de IA que responde preguntas sobre tus datos.</p>
                 </div>
 
                 <p class="relative text-sm text-white/60">Proyecto académico · Laravel 11</p>

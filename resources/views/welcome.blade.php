@@ -75,7 +75,7 @@
                                 ['🔎', 'Búsqueda y paginación', 'Encuentra cualquier registro por nombre, código o región en segundos.'],
                                 ['🛡️', 'Datos consistentes', 'Validación en español y protección para no borrar registros con dependencias.'],
                                 ['🔌', 'API REST', 'Endpoints JSON con filtros, paginación y escritura protegida con tokens Sanctum.'],
-                                ['🌙', 'Modo oscuro', 'Respeta la preferencia de tu sistema y recuerda tu elección.'],
+                                ['✨', 'Asistente con IA', 'Pregunta en lenguaje natural: Claude consulta la base de datos y te responde con cifras reales.'],
                                 ['🇨🇴', 'Datos reales', 'Incluye los 33 departamentos de Colombia y las comunas de Cali, Medellín y Bogotá.'],
                             ] as [$icono, $titulo, $texto])
                                 <div class="rounded-2xl border border-gray-200/70 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:bg-gray-900">

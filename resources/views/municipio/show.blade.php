@@ -4,6 +4,7 @@
                            :subtitle="$municipio->departamento?->depa_nomb . ', ' . $municipio->departamento?->pais?->pais_nomb">
             <x-slot name="actions">
                 <x-geo.button variant="secondary" :href="route('municipios.index')">← Volver</x-geo.button>
+                <x-geo.button variant="secondary" :href="route('asistente', ['q' => 'Cuéntame sobre ' . $municipio->muni_nomb . ' y sus comunas'])">✨ Preguntar a la IA</x-geo.button>
                 <x-geo.button :href="route('municipios.edit', $municipio)">Editar</x-geo.button>
             </x-slot>
         </x-geo.page-header>
