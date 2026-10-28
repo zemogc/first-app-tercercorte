@@ -13,7 +13,19 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        Panel
+                    </x-nav-link>
+                    <x-nav-link :href="route('paises.index')" :active="request()->routeIs('paises.*')">
+                        Países
+                    </x-nav-link>
+                    <x-nav-link :href="route('departamentos.index')" :active="request()->routeIs('departamentos.*')">
+                        Departamentos
+                    </x-nav-link>
+                    <x-nav-link :href="route('municipios.index')" :active="request()->routeIs('municipios.*')">
+                        Municipios
+                    </x-nav-link>
+                    <x-nav-link :href="route('comunas.index')" :active="request()->routeIs('comunas.*')">
+                        Comunas
                     </x-nav-link>
                 </div>
             </div>
@@ -68,7 +80,19 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+                Panel
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('paises.index')" :active="request()->routeIs('paises.*')">
+                Países
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('departamentos.index')" :active="request()->routeIs('departamentos.*')">
+                Departamentos
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('municipios.index')" :active="request()->routeIs('municipios.*')">
+                Municipios
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('comunas.index')" :active="request()->routeIs('comunas.*')">
+                Comunas
             </x-responsive-nav-link>
         </div>
 

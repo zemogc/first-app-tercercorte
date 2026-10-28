@@ -1,66 +1,26 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<x-app-layout title="Comunas">
+    <div class="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
+        <x-geo.page-header title="Comunas" subtitle="Comunas y localidades en las que se dividen los municipios.">
+            <x-slot name="actions">
+                <x-geo.search placeholder="Buscar comuna o municipio..." />
+                <x-geo.button :href="route('comunas.create')">+ Nueva comuna</x-geo.button>
+            </x-slot>
+        </x-geo.page-header>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <x-geo.flash />
 
-    <title>COMUNAS</title>
-  </head>
-  <body>
-  <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Comunas') }}
-        </h2>
-    </x-slot>
-    <div class="container">
-    <h1>Listado de Comunas</h1>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <a href="{{ route('comunas.create') }}"
-                        class="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded ml-2">Add</a>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Code</th>
-                                <th scope="col">Commune</th>
-                                <th scope="col">Municipality</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($comunas as $comuna)
-                                <tr>
-                                    <th scope="row">{{ $comuna->comu_codi }}</th>
-                                    <td>{{ $comuna->comu_nomb }}</td>
-                                    <td>{{ $comuna->muni_nomb }}</td>
-                                    <td>
-                                        <a href="{{ route('comunas.edit', ['comuna' => $comuna->comu_codi]) }}"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                            Edit </a></li>
-
-
-                                        <form action="{{ route('comunas.destroy', ['comuna' => $comuna->comu_codi]) }}"
-                                            method='POST' style="display: inline-block">
-                                            @method('delete')
-                                            @csrf
-                                            <input
-                                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
-                                                type="submit" value="Delete">
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        <x-geo.table :headers="['Código', 'Comuna', 'Municipio', 'Departamento', 'Acciones']" :paginator="$comunas">
+            @foreach ($comunas as $comuna)
+                <tr class="hover:bg-gray-50/60 dark:hover:bg-gray-800/40">
+                    <td class="geo-td text-gray-400">#{{ $comuna->comu_codi }}</td>
+                    <td class="geo-td font-medium text-gray-900 dark:text-white">{{ $comuna->comu_nomb }}</td>
+                    <td class="geo-td"><a href="{{ route('municipios.show', $comuna->muni_codi) }}" class="geo-link font-normal">{{ $comuna->municipio?->muni_nomb }}</a></td>
+                    <td class="geo-td">{{ $comuna->municipio?->departamento?->depa_nomb }}</td>
+                    <td class="geo-td">
+                        <x-geo.row-actions :edit="route('comunas.edit', $comuna)" :destroy="route('comunas.destroy', $comuna)" :nombre="$comuna->comu_nomb" />
+                    </td>
+                </tr>
+            @endforeach
+        </x-geo.table>
     </div>
 </x-app-layout>
