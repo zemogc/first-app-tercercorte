@@ -42,7 +42,7 @@
                     </p>
                     <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
                         <x-geo.button :href="auth()->check() ? route('dashboard') : route('login')" class="px-6 py-3 text-base">Comenzar ahora</x-geo.button>
-                        <x-geo.button variant="secondary" href="{{ url('/api/paises') }}" class="px-6 py-3 text-base">Ver la API</x-geo.button>
+                        <x-geo.button variant="secondary" :href="route('api.docs')" class="px-6 py-3 text-base">Ver la API</x-geo.button>
                     </div>
 
                     <dl class="mx-auto mt-16 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
