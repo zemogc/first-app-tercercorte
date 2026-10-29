@@ -19,7 +19,7 @@
                     <p class="mt-4 text-lg text-white/80">Países, departamentos, municipios y comunas en un solo lugar, con estadísticas, una API REST y un asistente de IA que responde preguntas sobre tus datos.</p>
                 </div>
 
-                <p class="relative text-sm text-white/60">Proyecto académico · Laravel 11</p>
+                <p class="relative text-sm text-white/60">Proyecto académico · Laravel 12</p>
             </div>
 
             <div class="flex flex-col items-center justify-center px-6 py-12">

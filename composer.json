@@ -1,24 +1,31 @@
 {
     "name": "zemogc/geoatlas",
     "type": "project",
-    "description": "Atlas geográfico de Latinoamérica con Laravel 11, API REST y asistente de IA con Claude.",
-    "keywords": ["laravel", "geografia", "colombia", "api-rest", "claude", "ia"],
+    "description": "Atlas geográfico de Latinoamérica con Laravel 12, API REST y asistente de IA con Claude.",
+    "keywords": [
+        "laravel",
+        "geografia",
+        "colombia",
+        "api-rest",
+        "claude",
+        "ia"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
         "anthropic-ai/sdk": "^1.3",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.9"
+        "laravel/tinker": "^2.10"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "laravel/breeze": "^2.0",
+        "laravel/breeze": "^2.3",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.0",
-        "phpunit/phpunit": "^10.5",
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^11.5",
         "spatie/laravel-ignition": "^2.4"
     },
     "autoload": {
@@ -62,6 +69,9 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
+        },
+        "platform": {
+            "php": "8.2.27"
         }
     },
     "minimum-stability": "stable",
