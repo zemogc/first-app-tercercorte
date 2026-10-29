@@ -3,6 +3,7 @@
         <x-geo.page-header :title="$departamento->depa_nomb" :subtitle="'Departamento de ' . $departamento->pais?->pais_nomb">
             <x-slot name="actions">
                 <x-geo.button variant="secondary" :href="route('departamentos.index')">← Volver</x-geo.button>
+                <x-geo.button variant="secondary" :href="route('asistente', ['q' => 'Dame un resumen de ' . $departamento->depa_nomb])">✨ Preguntar a la IA</x-geo.button>
                 <x-geo.button :href="route('departamentos.edit', $departamento)">Editar</x-geo.button>
             </x-slot>
         </x-geo.page-header>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AsistenteController;
 use App\Http\Controllers\ComunaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartamentoController;
@@ -32,6 +33,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('departamentos', DepartamentoController::class);
     Route::resource('municipios', MunicipioController::class);
     Route::resource('comunas', ComunaController::class)->except('show');
+
+    Route::get('/asistente', [AsistenteController::class, 'index'])->name('asistente');
+    Route::post('/asistente', [AsistenteController::class, 'preguntar'])
+        ->middleware('throttle:asistente')
+        ->name('asistente.preguntar');
 });
 
 Route::middleware('auth')->group(function () {
