@@ -2,54 +2,53 @@
 
 namespace App\Http\Controllers\api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Requests\Geografia\DepartamentoRequest;
+use App\Http\Resources\DepartamentoResource;
 use App\Models\Departamento;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class DepartamentoController extends Controller
+class DepartamentoController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request): AnonymousResourceCollection
     {
-        $departamentos = DB::table('tb_departamento')
-            ->join('tb_pais', 'tb_departamento.pais_codi', '=', 'tb_pais.pais_codi')
-            ->select('tb_departamento.*', 'tb_pais.pais_nomb')
-            ->get();
-            return json_encode(["departamentos"=>$departamentos]);
+        $departamentos = Departamento::with('pais')
+            ->withCount('municipios')
+            ->withSum('municipios', 'muni_pobl')
+            ->buscar($request->query('q'))
+            ->when($request->query('pais'), fn ($q, $pais) => $q->where('pais_codi', strtoupper($pais)))
+            ->orderBy('depa_nomb')
+            ->paginate($this->porPagina($request))
+            ->withQueryString();
+
+        return DepartamentoResource::collection($departamentos);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(DepartamentoRequest $request): JsonResponse
     {
-        //
+        $departamento = Departamento::create($request->validated());
+
+        return (new DepartamentoResource($departamento->load('pais')))->response()->setStatusCode(201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Departamento $departamento): DepartamentoResource
     {
-        //
+        return new DepartamentoResource($departamento
+            ->load(['pais', 'municipios' => fn ($q) => $q->withCount('comunas')->orderByDesc('muni_pobl')])
+            ->loadCount('municipios')
+            ->loadSum('municipios', 'muni_pobl'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(DepartamentoRequest $request, Departamento $departamento): DepartamentoResource
     {
-        //
+        $departamento->update($request->validated());
+
+        return new DepartamentoResource($departamento->load('pais'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Departamento $departamento): JsonResponse
     {
-        //
+        return $this->eliminar($departamento);
     }
 }

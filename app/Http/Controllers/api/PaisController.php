@@ -2,54 +2,51 @@
 
 namespace App\Http\Controllers\api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Requests\Geografia\PaisRequest;
+use App\Http\Resources\PaisResource;
 use App\Models\Pais;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class PaisController extends Controller
+class PaisController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request): AnonymousResourceCollection
     {
-        $paises = DB::table('tb_pais')
-            ->join('tb_municipio', 'tb_pais.pais_capi', '=', 'tb_municipio.muni_codi')
-            ->select('tb_pais.*', 'tb_municipio.muni_nomb')
-            ->get();
-        return json_encode(["paises"=>$paises]);
+        $paises = Pais::with('capital')
+            ->withCount('departamentos')
+            ->buscar($request->query('q'))
+            ->orderBy('pais_nomb')
+            ->paginate($this->porPagina($request))
+            ->withQueryString();
+
+        return PaisResource::collection($paises);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(PaisRequest $request): JsonResponse
     {
-        //
+        $pais = Pais::create($request->validated());
+
+        return (new PaisResource($pais->load('capital')))->response()->setStatusCode(201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Pais $pais): PaisResource
     {
-        //
+        return new PaisResource($pais->load([
+            'capital',
+            'departamentos' => fn ($q) => $q->withCount('municipios')->orderBy('depa_nomb'),
+        ])->loadCount('departamentos'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(PaisRequest $request, Pais $pais): PaisResource
     {
-        //
+        $pais->update($request->validated());
+
+        return new PaisResource($pais->load('capital'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Pais $pais): JsonResponse
     {
-        //
+        return $this->eliminar($pais);
     }
 }

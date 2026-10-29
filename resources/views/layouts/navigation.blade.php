@@ -45,8 +45,8 @@ $secciones = [
         @endforeach
     </nav>
 
-    <div class="m-3 rounded-2xl bg-gradient-to-br from-emerald-500 to-sky-600 p-4 text-white">
-        <p class="text-sm font-semibold">API pública</p>
+    <a href="{{ route('api.docs') }}" class="m-3 block rounded-2xl bg-gradient-to-br from-emerald-500 to-sky-600 p-4 text-white transition hover:shadow-lg">
+        <p class="text-sm font-semibold">API pública →</p>
         <p class="mt-1 text-xs text-white/80">Consulta los datos en JSON desde <code class="font-mono">/api</code>.</p>
-    </div>
+    </a>
 </aside>
