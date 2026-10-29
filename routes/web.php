@@ -6,10 +6,21 @@ use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\PaisController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Comuna;
+use App\Models\Departamento;
+use App\Models\Municipio;
+use App\Models\Pais;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome', [
+        'totales' => [
+            'Países' => Pais::count(),
+            'Departamentos' => Departamento::count(),
+            'Municipios' => Municipio::count(),
+            'Comunas' => Comuna::count(),
+        ],
+    ]);
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
