@@ -2,83 +2,59 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\EliminaConSeguridad;
+use App\Http\Requests\Geografia\ComunaRequest;
 use App\Models\Comuna;
+use App\Models\Municipio;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class ComunaController extends Controller
 {
+    use EliminaConSeguridad;
 
-    public function index()
+    public function index(Request $request): View
     {
-        //$comunas = Comuna::all();
-        $comunas = DB::table('tb_comuna')
-            ->join('tb_municipio', 'tb_comuna.muni_codi', '=', 'tb_municipio.muni_codi')
-            ->select('tb_comuna.*', 'tb_municipio.muni_nomb')
-            ->get();
-        return view('comuna.index', ['comunas'=>$comunas]);
-    }
+        $comunas = Comuna::with('municipio.departamento')
+            ->buscar($request->query('q'))
+            ->orderBy('muni_codi')
+            ->orderBy('comu_codi')
+            ->paginate(10)
+            ->withQueryString();
 
-    public function create()
-    {
-        $municipios = DB::table('tb_municipio')
-        ->orderBy('muni_nomb')
-        ->get();
-        return view('comuna.new', ['municipios' => $municipios]);
-    }
-
-    public function store(Request $request)
-    {
-        $comuna = new Comuna();
-        // $comuna->comu_codi = $request->id;
-        // El código de comuna es auto incremental
-        $comuna->comu_nomb = $request->name;
-        $comuna->muni_codi = $request->code;
-        $comuna->save();
-
-        $comunas = DB::table('tb_comuna')
-        ->join('tb_municipio', 'tb_comuna.muni_codi', '=', 'tb_municipio.muni_codi')
-        ->select('tb_comuna.*', 'tb_municipio.muni_nomb')
-        ->get();
         return view('comuna.index', ['comunas' => $comunas]);
     }
 
-    public function show(string $id)
+    public function create(): View
     {
-        //
+        return view('comuna.new', ['municipios' => Municipio::orderBy('muni_nomb')->get()]);
     }
 
-    public function edit($id)
+    public function store(ComunaRequest $request): RedirectResponse
     {
-        $comuna= Comuna::find($id);
-        $municipios=DB::table('tb_municipio')
-        ->orderBy('muni_nomb')
-        ->get();
-        return view('comuna.edit', ['comuna' => $comuna, 'municipios'=>$municipios]);
+        $comuna = Comuna::create($request->validated());
+
+        return redirect()->route('comunas.index')->with('success', "Comuna {$comuna->comu_nomb} creada correctamente.");
     }
 
-    public function update(Request $request, $id)
+    public function edit(Comuna $comuna): View
     {
-        $comuna= Comuna::find($id);
-        $comuna->comu_nomb = $request->name;
-        $comuna->muni_codi = $request->code;
-        $comuna->save();
-        $comunas=DB::table('tb_comuna')
-        ->join('tb_municipio', 'tb_comuna.muni_codi', '=', 'tb_municipio.muni_codi')
-        ->select('tb_comuna.*', 'tb_municipio.muni_nomb')
-        ->get();
-        return view('comuna.index', ['comunas' => $comunas]);
+        return view('comuna.edit', [
+            'comuna' => $comuna,
+            'municipios' => Municipio::orderBy('muni_nomb')->get(),
+        ]);
     }
 
-    public function destroy($id)
+    public function update(ComunaRequest $request, Comuna $comuna): RedirectResponse
     {
-        $comuna= Comuna::find($id);
-        $comuna->delete();
+        $comuna->update($request->validated());
 
-        $comunas=DB::table('tb_comuna')
-        ->join('tb_municipio', 'tb_comuna.muni_codi', '=', 'tb_municipio.muni_codi')
-        ->select('tb_comuna.*', 'tb_municipio.muni_nomb')
-        ->get();
-        return view('comuna.index', ['comunas' => $comunas]);
+        return redirect()->route('comunas.index')->with('success', "Comuna {$comuna->comu_nomb} actualizada.");
+    }
+
+    public function destroy(Comuna $comuna): RedirectResponse
+    {
+        return $this->eliminar($comuna, 'comunas.index', 'la comuna');
     }
 }

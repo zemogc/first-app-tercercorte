@@ -2,87 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\EliminaConSeguridad;
+use App\Http\Requests\Geografia\MunicipioRequest;
+use App\Models\Departamento;
 use App\Models\Municipio;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class MunicipioController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * 
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //$municipios = Municipio::all();
-        $municipios = DB::table('tb_municipio')
-            ->join('tb_departamento', 'tb_municipio.depa_codi', '=', 'tb_departamento.depa_codi')
-            ->select('tb_municipio.*', 'tb_departamento.depa_nomb')
-            ->get();
-        return view('municipio.index', ['municipios'=>$municipios]);
-    }
+    use EliminaConSeguridad;
 
-    public function create()
+    public function index(Request $request): View
     {
-        $departamentos = DB::table('tb_departamento')
-        ->orderBy('depa_nomb')
-        ->get();
-        return view('municipio.new', ['departamentos' => $departamentos]);
-    }
+        $municipios = Municipio::with('departamento.pais')
+            ->withCount('comunas')
+            ->buscar($request->query('q'))
+            ->orderBy('muni_nomb')
+            ->paginate(10)
+            ->withQueryString();
 
-    public function store(Request $request)
-    {
-        $municipio = new Municipio();
-        // $municipio->muni_codi = $request->id;
-        // El código de municipio es auto incremental
-        $municipio->muni_nomb = $request->name;
-        $municipio->depa_codi = $request->code;
-        $municipio->save();
-
-        $municipios = DB::table('tb_municipio')
-        ->join('tb_departamento', 'tb_municipio.depa_codi', '=', 'tb_departamento.depa_codi')
-        ->select('tb_municipio.*', 'tb_departamento.depa_nomb')
-        ->get();
         return view('municipio.index', ['municipios' => $municipios]);
     }
 
-    public function show(string $id)
+    public function create(): View
     {
-        //
+        return view('municipio.new', ['departamentos' => Departamento::with('pais')->orderBy('depa_nomb')->get()]);
     }
 
-    public function edit($id)
+    public function store(MunicipioRequest $request): RedirectResponse
     {
-        $municipio= Municipio::find($id);
-        $departamentos=DB::table('tb_departamento')
-        ->orderBy('depa_nomb')
-        ->get();
-        return view('municipio.edit', ['municipio' => $municipio, 'departamentos'=>$departamentos]);
+        $municipio = Municipio::create($request->validated());
+
+        return redirect()->route('municipios.index')
+            ->with('success', "Municipio {$municipio->muni_nomb} creado correctamente.");
     }
 
-    public function update(Request $request, $id)
+    public function show(Municipio $municipio): View
     {
-        $municipio= Municipio::find($id);
-        $municipio->muni_nomb = $request->name;
-        $municipio->depa_codi = $request->code;
-        $municipio->save();
-        $municipios=DB::table('tb_municipio')
-        ->join('tb_departamento', 'tb_municipio.depa_codi', '=', 'tb_departamento.depa_codi')
-        ->select('tb_municipio.*', 'tb_departamento.depa_nomb')
-        ->get();
-        return view('municipio.index', ['municipios' => $municipios]);
+        $municipio->load(['departamento.pais', 'comunas' => fn ($q) => $q->orderBy('comu_codi')]);
+
+        return view('municipio.show', ['municipio' => $municipio]);
     }
 
-    public function destroy($id)
+    public function edit(Municipio $municipio): View
     {
-        $municipio= Municipio::find($id);
-        $municipio->delete();
+        return view('municipio.edit', [
+            'municipio' => $municipio,
+            'departamentos' => Departamento::with('pais')->orderBy('depa_nomb')->get(),
+        ]);
+    }
 
-        $municipios=DB::table('tb_municipio')
-        ->join('tb_departamento', 'tb_municipio.depa_codi', '=', 'tb_departamento.depa_codi')
-        ->select('tb_municipio.*', 'tb_departamento.depa_nomb')
-        ->get();
-        return view('municipio.index', ['municipios' => $municipios]);
+    public function update(MunicipioRequest $request, Municipio $municipio): RedirectResponse
+    {
+        $municipio->update($request->validated());
+
+        return redirect()->route('municipios.index')
+            ->with('success', "Municipio {$municipio->muni_nomb} actualizado.");
+    }
+
+    public function destroy(Municipio $municipio): RedirectResponse
+    {
+        return $this->eliminar($municipio, 'municipios.index', 'el municipio');
     }
 }

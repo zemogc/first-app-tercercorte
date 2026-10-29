@@ -2,83 +2,69 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\EliminaConSeguridad;
+use App\Http\Requests\Geografia\PaisRequest;
+use App\Models\Municipio;
 use App\Models\Pais;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class PaisController extends Controller
 {
+    use EliminaConSeguridad;
 
-    public function index()
+    public function index(Request $request): View
     {
-        //$pais = Pais::all();
-        $paises = DB::table('tb_pais')
-            ->join('tb_municipio', 'tb_pais.pais_capi', '=', 'tb_municipio.muni_codi')
-            ->select('tb_pais.*', 'tb_municipio.muni_nomb')
-            ->get();
-        return view('pais.index', ['paises'=>$paises]);
-    }
+        $paises = Pais::with('capital')
+            ->withCount('departamentos')
+            ->buscar($request->query('q'))
+            ->orderBy('pais_nomb')
+            ->paginate(10)
+            ->withQueryString();
 
-
-    public function create()
-    {
-        $municipios = DB::table('tb_municipio')
-        ->orderBy('muni_nomb')
-        ->get();
-        return view('pais.new', ['municipios' => $municipios]);
-    }
-
-    public function store(Request $request)
-    {
-        $pais = new Pais();
-        $pais->pais_codi = strtoupper($request->id);
-        $pais->pais_nomb = $request->name;
-        $pais->pais_capi = $request->code;
-        $pais->save();
-
-        $paises = DB::table('tb_pais')
-        ->join('tb_municipio', 'tb_pais.pais_capi', '=', 'tb_municipio.muni_codi')
-        ->select('tb_pais.*', 'tb_municipio.muni_nomb')
-        ->get();
         return view('pais.index', ['paises' => $paises]);
     }
 
-    public function show(string $id)
+    public function create(): View
     {
-        //
+        return view('pais.new', ['municipios' => Municipio::orderBy('muni_nomb')->get()]);
     }
 
-    public function edit($id)
+    public function store(PaisRequest $request): RedirectResponse
     {
-        $pais= Pais::find($id);
-        $municipios=DB::table('tb_municipio')
-        ->orderBy('muni_nomb')
-        ->get();
-        return view('pais.edit', ['pais' => $pais, 'municipios'=>$municipios]);
+        $pais = Pais::create($request->validated());
+
+        return redirect()->route('paises.index')->with('success', "País {$pais->pais_nomb} creado correctamente.");
     }
 
-    public function update(Request $request, $id)
+    public function show(Pais $pais): View
     {
-        $pais= Pais::find($id);
-        $pais->pais_nomb = $request->name;
-        $pais->pais_capi = $request->code;
-        $pais->save();
-        $paises=DB::table('tb_pais')
-        ->join('tb_municipio', 'tb_pais.pais_capi', '=', 'tb_municipio.muni_codi')
-        ->select('tb_pais.*', 'tb_municipio.muni_nomb')
-        ->get();
-        return view('pais.index', ['paises' => $paises]);
+        $pais->load(['capital', 'departamentos' => fn ($q) => $q->withCount('municipios')->orderBy('depa_nomb')]);
+
+        return view('pais.show', [
+            'pais' => $pais,
+            'poblacion' => (int) $pais->municipios()->sum('muni_pobl'),
+        ]);
     }
 
-    public function destroy( $id)
+    public function edit(Pais $pais): View
     {
-        $pais= Pais::find($id);
-        $pais->delete();
+        return view('pais.edit', [
+            'pais' => $pais,
+            'municipios' => Municipio::orderBy('muni_nomb')->get(),
+        ]);
+    }
 
-        $paises=DB::table('tb_pais')
-        ->join('tb_municipio', 'tb_pais.pais_capi', '=', 'tb_municipio.muni_codi')
-        ->select('tb_pais.*', 'tb_municipio.muni_nomb')
-        ->get();
-        return view('pais.index', ['paises' => $paises]);
+    public function update(PaisRequest $request, Pais $pais): RedirectResponse
+    {
+        $pais->update($request->validated());
+
+        return redirect()->route('paises.index')->with('success', "País {$pais->pais_nomb} actualizado.");
+    }
+
+    public function destroy(Pais $pais): RedirectResponse
+    {
+        return $this->eliminar($pais, 'paises.index', 'el país');
     }
 }
